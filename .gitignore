@@ -1,0 +1,36 @@
+# Auto-generated files with secrets
+deploy_commands.sh
+deployment_log.json
+verification_report.json
+github_deploy_now.sh
+deploy_to_github.py
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.temp
+/tmp/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
