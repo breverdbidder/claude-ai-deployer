@@ -91,7 +91,7 @@ git push -u origin main
 Add to repository settings → Secrets and variables → Actions:
 
 ```
-GITHUB_TOKEN: YOUR_GITHUB_TOKEN_HERE
+GITHUB_TOKEN: ghp_YOUR_TOKEN_HERE
 SUPABASE_KEY: [your-supabase-key]
 ```
 
@@ -183,7 +183,7 @@ To add new routing rules, edit `ROUTING_RULES` dictionary.
 
 ```bash
 # Required
-GITHUB_TOKEN=YOUR_GITHUB_TOKEN_HERE
+GITHUB_TOKEN=ghp_YOUR_TOKEN_HERE
 SUPABASE_URL=https://mocerqjnksmhcjzxrewo.supabase.co
 SUPABASE_KEY=[your-key]
 
