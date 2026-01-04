@@ -185,7 +185,7 @@ git push -u origin main
 
 3. **Configure secrets:**
 - Go to repo settings → Secrets and variables → Actions
-- Add `GITHUB_TOKEN`: YOUR_GITHUB_TOKEN_HERE
+- Add `GITHUB_TOKEN`: ghp_YOUR_TOKEN_HERE
 - Add `SUPABASE_KEY`: [your key]
 
 4. **Enable workflow:**
