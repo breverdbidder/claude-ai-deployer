@@ -10,6 +10,7 @@ Created: 2025-01-03
 import json
 import sys
 import time
+import os
 from pathlib import Path
 from typing import Dict, List
 import subprocess
@@ -21,7 +22,7 @@ class DeploymentVerifier:
     def __init__(self, log_path: Path):
         self.log_path = log_path
         self.log_data = self._load_log()
-        self.github_token = 'YOUR_GITHUB_TOKEN_HERE'
+        self.github_token = os.getenv('GITHUB_TOKEN', '')  # Set via environment variable
         self.github_api = 'https://api.github.com'
         self.github_user = 'breverdbidder'
     
