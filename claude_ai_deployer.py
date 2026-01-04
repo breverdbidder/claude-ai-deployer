@@ -19,7 +19,7 @@ from typing import Dict, List, Optional, Tuple
 import re
 
 # Configuration
-GITHUB_TOKEN = os.getenv('GITHUB_TOKEN', 'YOUR_GITHUB_TOKEN_HERE')
+GITHUB_TOKEN = os.getenv('GITHUB_TOKEN', '')  # Set via environment variable or GitHub secrets
 GITHUB_API = 'https://api.github.com'
 GITHUB_USER = 'breverdbidder'
 OUTPUTS_DIR = Path('/mnt/user-data/outputs')
