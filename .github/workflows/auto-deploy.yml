@@ -1,0 +1,94 @@
+name: Claude AI Auto-Deploy
+
+on:
+  schedule:
+    # Run every 5 minutes
+    - cron: '*/5 * * * *'
+  
+  workflow_dispatch:
+    inputs:
+      force_deploy:
+        description: 'Force deployment even if no files detected'
+        required: false
+        default: 'false'
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  SUPABASE_URL: https://mocerqjnksmhcjzxrewo.supabase.co
+  SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+
+jobs:
+  auto-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout claude-ai-deployer
+        uses: actions/checkout@v4
+        with:
+          repository: breverdbidder/claude-ai-deployer
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Simulate outputs directory
+        run: |
+          # In production, this would mount actual Claude AI outputs
+          # For now, create test directory structure
+          mkdir -p /tmp/outputs
+          echo "Simulated outputs directory created"
+      
+      - name: Run Claude AI Deployer
+        id: deploy
+        run: |
+          python claude_ai_deployer.py
+        env:
+          OUTPUTS_DIR: /tmp/outputs
+      
+      - name: Execute deployment commands
+        if: hashFiles('deploy_commands.sh') != ''
+        run: |
+          if [ -f deploy_commands.sh ]; then
+            echo "Executing deployment commands..."
+            bash deploy_commands.sh
+          else
+            echo "No deployment commands generated"
+          fi
+      
+      - name: Upload deployment log
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: deployment-log
+          path: deployment_log.json
+          retention-days: 30
+      
+      - name: Log to Supabase
+        if: always()
+        run: |
+          # Log deployment results to Supabase insights table
+          if [ -f deployment_log.json ]; then
+            TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+            TOTAL=$(jq '.total_deployments' deployment_log.json)
+            
+            curl -X POST \
+              "${SUPABASE_URL}/rest/v1/insights" \
+              -H "apikey: ${SUPABASE_KEY}" \
+              -H "Authorization: Bearer ${SUPABASE_KEY}" \
+              -H "Content-Type: application/json" \
+              -d "{
+                \"timestamp\": \"${TIMESTAMP}\",
+                \"category\": \"deployment\",
+                \"metric_name\": \"claude_ai_auto_deploy\",
+                \"metric_value\": ${TOTAL},
+                \"details\": $(cat deployment_log.json | jq -c)
+              }"
+          fi
+      
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "⚠️ Deployment failed - check logs"
+          # Future: Add Slack/email notification
